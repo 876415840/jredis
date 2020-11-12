@@ -1,5 +1,6 @@
 package org.jredis.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jredis.constant.JredisDbEnum;
 import org.jredis.constant.code.OperateCacheErrorEnum;
 import org.jredis.modules.JredisDb;
@@ -9,11 +10,14 @@ import org.jredis.vo.ResponseVO;
 import org.jredis.vo.SetRequestVO;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.ServerSocket;
+
 /**
  * @Description: 缓存处理
  * @Author MengQingHao
  * @Date 2020/5/9 2:04 下午
  */
+@Slf4j
 @RestController
 @RequestMapping("/cache")
 public class CacheController {
@@ -33,6 +37,15 @@ public class CacheController {
 
     @GetMapping("/getString/{key}")
     public ResponseVO<String> getString(@PathVariable("key") String key) {
+        log.info("--------------- get key--------------------1");
+        if (Integer.parseInt(key) % 2 == 1) {
+            try {
+                Thread.sleep(100000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        log.info("--------------- get key--------------------2");
         Jsds jsds = (Jsds) JredisDbEnum.ENTITY.getJredisDb().getValue(key);
         if (jsds == null) {
             return ResponseVO.ofError(OperateCacheErrorEnum.KEY_NOT_FIND);

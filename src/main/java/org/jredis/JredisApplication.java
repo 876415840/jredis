@@ -1,10 +1,13 @@
 package org.jredis;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jredis.net.TCPReactor;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+
+import java.io.IOException;
 
 /**
  * @Description: 启动类
@@ -22,6 +25,11 @@ public class JredisApplication implements DisposableBean {
         ctx = SpringApplication.run(JredisApplication.class, args);
         for (String str : ctx.getEnvironment().getActiveProfiles()) {
             log.info(str);
+        }
+        try {
+            new TCPReactor(8081).run();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         log.info("Boot Server started.");
 
